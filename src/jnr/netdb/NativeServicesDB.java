@@ -2,13 +2,10 @@
 package jnr.netdb;
 
 import com.kenai.jaffl.Library;
-import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
 import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.kenai.jaffl.Platform.OS.*;
 
