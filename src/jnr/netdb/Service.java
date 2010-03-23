@@ -100,6 +100,12 @@ public final class Service {
      * Holds the global lazily-loaded instance of the ServicesDB
      */
     private static final class ServicesDBSingletonHolder {
-        static final ServicesDB INSTANCE = IANAServices.getInstance();
+        static final ServicesDB INSTANCE = load();
+        
+        private static final ServicesDB load() {
+            ServicesDB db = NativeServicesDB.load();
+
+            return db != null ? db : IANAServices.getInstance();
+        }
     }
 }
