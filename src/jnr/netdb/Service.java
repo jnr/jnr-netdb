@@ -16,7 +16,7 @@ public final class Service {
     private final int port;
 
     /** Protocol to use */
-    private final String proto;
+    final String proto;
 
     /** All the aliases for this service */
     private final List<String> aliases;
@@ -103,8 +103,15 @@ public final class Service {
         static final ServicesDB INSTANCE = load();
         
         private static final ServicesDB load() {
+            // Try to use the native functions if possible
             ServicesDB db = NativeServicesDB.load();
 
+            // Fall back to parsing /etc/services directly.
+            if (db == null) {
+                db = FileServicesDB.load();
+            }
+
+            // As a last resort, fall back to the hard coded table
             return db != null ? db : IANAServices.getInstance();
         }
     }
