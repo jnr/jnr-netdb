@@ -2,10 +2,13 @@
 package jnr.netdb;
 
 import com.kenai.jaffl.Library;
+import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
 import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.kenai.jaffl.Platform.OS.*;
 
@@ -37,6 +40,9 @@ final class NativeServicesDB implements ServicesDB {
                         : new String[] { "c" };
 
             LibServices lib = Library.loadLibrary(LibServices.class, libnames);
+            // Try to lookup a service to make sure the library loaded and found the functions
+            lib.getservbyname("bootps", "udp");
+            lib.getservbyport(67, "udp");
             
             return new NativeServicesDB(lib);
         } catch (Throwable t) {
@@ -74,7 +80,9 @@ final class NativeServicesDB implements ServicesDB {
     }
 
     public Service getServiceByPort(Integer port, String proto) {
-        return serviceFromNative(lib.getservbyport(port, proto));
+        int nport = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes(port.shortValue()) : port.shortValue();
+        
+        return serviceFromNative(lib.getservbyport(nport, proto));
     }
 
 

@@ -34,8 +34,15 @@ public class ServiceTest {
 
     
 
-    @Test public void bootpsServiceShouldExist() {
+    @Test public void canLookupBootpServiceByName() {
         Service s = Service.getServiceByName("bootps", "udp");
+        assertNotNull("could not lookup bootps service", s);
+        assertEquals("incorrect port", 67, s.getPort());
+        assertEquals("incorrect name", "bootps", s.getName());
+    }
+
+    @Test public void canLookupBootpServiceByPort() {
+        Service s = Service.getServiceByPort(67, "udp");
         assertNotNull("could not lookup bootps service", s);
         assertEquals("incorrect port", 67, s.getPort());
         assertEquals("incorrect name", "bootps", s.getName());
