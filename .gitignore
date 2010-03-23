@@ -1,0 +1,11 @@
+*.orig$
+*.rej$
+*.class$
+*~
+.idea
+*.iml
+nbproject/private
+build
+dist
+target
+lib/nblibraries-private.properties
