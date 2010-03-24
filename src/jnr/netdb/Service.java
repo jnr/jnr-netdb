@@ -125,7 +125,7 @@ public final class Service {
 
             // Fall back to parsing /etc/services directly.
             if (db == null) {
-                db = FileServicesDB.load();
+                db = FileServicesDB.getInstance();
             }
 
             // As a last resort, fall back to the hard coded table
