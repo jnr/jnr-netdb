@@ -32,7 +32,8 @@ final class IANAServices implements ServicesDB {
     private final Map<String, Service> udpNameToService;
     private final List<Service> allServices;
     
-    private IANAServices(Map<String, Service> tcpNameToService, Map<String, Service> udpNameToService, Map<Integer, Service> tcpServices, Map<Integer, Service> udpServices) {
+    private IANAServices(Map<String, Service> tcpNameToService, Map<String, Service> udpNameToService,
+            Map<Integer, Service> tcpServices, Map<Integer, Service> udpServices) {
         this.tcpNameToService = tcpNameToService;
         this.udpNameToService = udpNameToService;
         this.tcpPortToService = tcpServices;
@@ -45,7 +46,7 @@ final class IANAServices implements ServicesDB {
     }
 
     private static final class SingletonHolder {
-        public static final IANAServices INSTANCE = initServices();
+        public static final IANAServices INSTANCE = buildServices();
     }
 
     public static final IANAServices getInstance() {
@@ -117,9 +118,13 @@ final class IANAServices implements ServicesDB {
                 udpPortToService.put(port, s);
             }
         }
+
+        IANAServices build() {
+            return new IANAServices(tcpNameToService, udpNameToService, tcpPortToService, udpPortToService);
+        }
     }
     
-    private static final IANAServices initServices() {
+    private static final IANAServices buildServices() {
         
         ServicesBuilder builder = new ServicesBuilder();
 
@@ -2916,6 +2921,6 @@ final class IANAServices implements ServicesDB {
         builder.add("exp2", "udp", 1022);
         
         
-        return new IANAServices(builder.tcpNameToService, builder.udpNameToService, builder.tcpPortToService, builder.udpPortToService);
+        return builder.build();
     }
 }
