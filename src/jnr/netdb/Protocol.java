@@ -29,7 +29,7 @@ public final class Protocol {
 
     private final int proto;
 
-    /** All the aliases for this service */
+    /** All the aliases for this protocol */
     private final Collection<String> aliases;
 
     Protocol(String name, int proto, Collection<String> aliases) {
@@ -39,7 +39,7 @@ public final class Protocol {
     }
 
     /**
-     * Looks up a protocol by name.
+     * Locates a protocol by name.
      *
      * @param name the official IANA name for the protocol, or an alias.
      * @return a {@code Protocol} instance, or {@code null} if the protocol could not be found.
@@ -50,18 +50,18 @@ public final class Protocol {
 
 
     /**
-     * Looks up a protocol by number.
+     * Locates a protocol by number.
      *
-     * @param name the internet protocol number of the protocol.
+     * @param proto the internet protocol number of the protocol.
      * @return a {@code Protocol} instance, or {@code null} if the protocol could not be found.
      */
-    public static final Protocol getProtocolByNumber(int port) {
-        return getProtocolDB().getProtocolByNumber(port);
+    public static final Protocol getProtocolByNumber(int proto) {
+        return getProtocolDB().getProtocolByNumber(proto);
     }
 
 
     /**
-     * Gets the official IANA name of this {@code Protocol}
+     * Returns the official IANA name of this {@code Protocol}
      *
      * @return The name of this {@code Protocol} as a {@code String}
      */
@@ -70,34 +70,34 @@ public final class Protocol {
     }
 
     /**
-     * Gets the official IANA port for this {@code Service}
+     * Returns the official IANA protocol number for this {@code Protocol}
      *
-     * @return The port for this {@code Service} as an {@code int}
+     * @return The protocol number for this {@code Protocol} as an {@code int}
      */
     public final int getProto() {
         return proto;
     }
 
     /**
-     * Gets a list of aliases this {@code Service} is also known as.
+     * Returns a list of aliases this {@code Protocol} is also known by.
      *
-     * @return A {@code Collection} of Strings for aliases this {@code Service}
+     * @return A {@code Collection} of Strings for aliases this {@code Protocol}
      */
     public final Collection<String> getAliases() {
         return aliases;
     }
 
     /**
-     * Returns the currently loaded ServicesDB
+     * Returns the currently loaded ProtocolDB
      *
-     * @return an instance of {@code ServicesDB}
+     * @return an instance of {@code ProtocolDB}
      */
     private static final ProtocolDB getProtocolDB() {
         return ProtocolDBSingletonHolder.INSTANCE;
     }
 
     /**
-     * Holds the global lazily-loaded instance of the ServicesDB
+     * Holds the global lazily-loaded instance of the ProtocolDB
      */
     private static final class ProtocolDBSingletonHolder {
         static final ProtocolDB INSTANCE = load();
@@ -106,7 +106,7 @@ public final class Protocol {
             // Try to use the native functions if possible
             ProtocolDB db = NativeProtocolDB.getInstance();
 
-            // Fall back to parsing /etc/services directly.
+            // Fall back to parsing /etc/protocols directly.
             if (db == null) {
                 db = FileProtocolDB.getInstance();
             }

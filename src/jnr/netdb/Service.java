@@ -44,7 +44,7 @@ public final class Service {
     }
 
     /**
-     * Looks up a service by name and protocol.
+     * Locates a service by name and protocol.
      *
      * @param name the official IANA name for the service, or an alias.
      * @param proto the protocol for the service.  Usually "tcp" or "udp".
@@ -56,9 +56,9 @@ public final class Service {
 
 
     /**
-     * Looks up a service by port and protocol.
+     * Locates a service by port and protocol.
      *
-     * @param name the TCP or UDP port of the service.
+     * @param port the TCP or UDP port of the service.
      * @param proto the protocol for the service.  Usually "tcp" or "udp".
      * @return a {@code Service} instance, or {@code null} if the service could not be found.
      */
@@ -67,7 +67,7 @@ public final class Service {
     }
 
     /**
-     * Gets a list of all services.
+     * Returns a list of all services.
      *
      * @return a {@code Collection} of {@code Service} instances.
      */
@@ -76,7 +76,7 @@ public final class Service {
     }
 
     /**
-     * Gets the official IANA name of this {@code Service}
+     * Returns the official IANA name of this {@code Service}
      *
      * @return The name of this {@code Service} as a {@code String}
      */
@@ -85,7 +85,7 @@ public final class Service {
     }
 
     /**
-     * Gets the official IANA port for this {@code Service}
+     * Returns the official IANA port for this {@code Service}
      *
      * @return The port for this {@code Service} as an {@code int}
      */
