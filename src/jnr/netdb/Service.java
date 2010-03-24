@@ -18,10 +18,8 @@
 
 package jnr.netdb;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Holds information about TCP and UDP services on a host.
@@ -36,13 +34,13 @@ public final class Service {
     final String proto;
 
     /** All the aliases for this service */
-    private final List<String> aliases;
+    private final Collection<String> aliases;
 
     Service(String name, int port, String proto, Collection<String> aliases) {
         this.serviceName = name;
         this.port = port;
         this.proto = proto;
-        this.aliases = Collections.unmodifiableList(new ArrayList<String>(aliases));
+        this.aliases = aliases;
     }
 
     /**
