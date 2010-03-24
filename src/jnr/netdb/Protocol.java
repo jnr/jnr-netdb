@@ -23,7 +23,7 @@ import java.util.Collection;
 /**
  * An entry in the system protocol database
  */
-public class Protocol {
+public final class Protocol {
     /** Official protocol name */
     private final String protocolName;
 
