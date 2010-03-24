@@ -23,6 +23,7 @@ import com.kenai.jaffl.Platform;
 import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static com.kenai.jaffl.Platform.OS.*;
 
@@ -78,7 +79,7 @@ final class NativeServicesDB implements ServicesDB {
     }
     
     public Collection<Service> getAllServices() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     private final Service serviceFromNative(UnixServent s) {
@@ -86,7 +87,8 @@ final class NativeServicesDB implements ServicesDB {
         // so it needs to be reversed again to be correct.
         int port = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes((short) s.port.get()) : s.port.get();
 
-        return s != null ? new Service(s.name.get(), port, s.proto.get(), Collections.EMPTY_LIST) : null;
+        List<String> emptyAliases = Collections.emptyList();
+        return s != null ? new Service(s.name.get(), port, s.proto.get(), emptyAliases) : null;
     }
 
     public Service getServiceByName(String name, String proto) {

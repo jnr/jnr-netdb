@@ -52,7 +52,7 @@ final class NativeProtocolDB implements ProtocolDB {
             
             
 
-            // The ServiceEntry struct is only known to match on MacOSX, Linux, Solaris.
+            // The protoent struct is only known to match on MacOSX, Linux, Solaris.
             // We assume FreeBSD and NetBSD also match.
             if (!(os.equals(DARWIN) || os.equals(LINUX) || os.equals(SOLARIS) || os.equals(FREEBSD) || os.equals(NETBSD))) {
                 return null;
@@ -110,7 +110,7 @@ final class NativeProtocolDB implements ProtocolDB {
     }
 
     public Collection<Protocol> getAllProtocols() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
 }

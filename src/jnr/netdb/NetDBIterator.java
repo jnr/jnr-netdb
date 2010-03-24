@@ -44,7 +44,7 @@ final class NetDBIterator implements java.util.Iterator<NetDBEntry> {
                         }
                     }
                 } else {
-                    aliases = Collections.EMPTY_LIST;
+                    aliases = Collections.emptyList();
                 }
                 return new NetDBEntry(serviceName, data, aliases);
             }
