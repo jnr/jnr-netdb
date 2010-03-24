@@ -92,7 +92,7 @@ public final class Protocol {
      *
      * @return an instance of {@code ProtocolDB}
      */
-    private static final ProtocolDB getProtocolDB() {
+    private static final ProtocolsDB getProtocolDB() {
         return ProtocolDBSingletonHolder.INSTANCE;
     }
 
@@ -100,19 +100,19 @@ public final class Protocol {
      * Holds the global lazily-loaded instance of the ProtocolDB
      */
     private static final class ProtocolDBSingletonHolder {
-        static final ProtocolDB INSTANCE = load();
+        static final ProtocolsDB INSTANCE = load();
 
-        private static final ProtocolDB load() {
+        private static final ProtocolsDB load() {
             // Try to use the native functions if possible
-            ProtocolDB db = NativeProtocolDB.getInstance();
+            ProtocolsDB db = NativeProtocolsDB.getInstance();
 
             // Fall back to parsing /etc/protocols directly.
             if (db == null) {
-                db = FileProtocolDB.getInstance();
+                db = FileProtocolsDB.getInstance();
             }
 
             // As a last resort, fall back to the hard coded table
-            return db != null ? db : IANAProtocolDB.getInstance();
+            return db != null ? db : IANAProtocolsDB.getInstance();
         }
     }
 }

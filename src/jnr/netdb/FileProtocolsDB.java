@@ -31,20 +31,20 @@ import java.util.List;
 /**
  *
  */
-class FileProtocolDB implements ProtocolDB {
+class FileProtocolsDB implements ProtocolsDB {
 
-    public static final FileProtocolDB getInstance() {
+    public static final FileProtocolsDB getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     private static final class SingletonHolder {
-        public static final FileProtocolDB INSTANCE = load();
+        public static final FileProtocolsDB INSTANCE = load();
     }
 
-    FileProtocolDB() {
+    FileProtocolsDB() {
     }
 
-    private static FileProtocolDB load() {
+    private static FileProtocolsDB load() {
         try {
             // Fail unless /etc/protocols can be read and contains at least one valid entry
             NetDBParser parser = parseProtocolsFile();
@@ -54,7 +54,7 @@ class FileProtocolDB implements ProtocolDB {
                 parser.close();
             }
 
-            return new FileProtocolDB();
+            return new FileProtocolsDB();
 
         } catch (Throwable t) {
             return null;

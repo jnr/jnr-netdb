@@ -30,23 +30,23 @@ import static com.kenai.jaffl.Platform.OS.*;
 /**
  *
  */
-final class NativeProtocolDB implements ProtocolDB {
+final class NativeProtocolsDB implements ProtocolsDB {
 
     private final LibProto lib;
 
-    public static final NativeProtocolDB getInstance() {
+    public static final NativeProtocolsDB getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     private static final class SingletonHolder {
-        public static final NativeProtocolDB INSTANCE = load();
+        public static final NativeProtocolsDB INSTANCE = load();
     }
 
-    NativeProtocolDB(LibProto lib) {
+    NativeProtocolsDB(LibProto lib) {
         this.lib = lib;
     }
 
-    private static final NativeProtocolDB load() {
+    private static final NativeProtocolsDB load() {
         try {
             Platform.OS os = Platform.getPlatform().getOS();
             
@@ -67,7 +67,7 @@ final class NativeProtocolDB implements ProtocolDB {
             lib.getprotobyname("ip");
             lib.getprotobynumber(0);
             
-            return new NativeProtocolDB(lib);
+            return new NativeProtocolsDB(lib);
         } catch (Throwable t) {
             return null;
         }

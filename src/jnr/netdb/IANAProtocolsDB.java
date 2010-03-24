@@ -29,20 +29,20 @@ import java.util.Map;
 /**
  * Pre-compiled table of IANA protocol numbers
  */
-class IANAProtocolDB implements ProtocolDB {
+class IANAProtocolsDB implements ProtocolsDB {
 
     private final Map<String, Protocol> nameToProto;
     private final Map<Integer, Protocol> numberToProto;
 
-    public static final IANAProtocolDB getInstance() {
+    public static final IANAProtocolsDB getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     private static final class SingletonHolder {
-        public static final IANAProtocolDB INSTANCE = initProtocolDB().build();
+        public static final IANAProtocolsDB INSTANCE = initProtocolDB().build();
     }
 
-    private IANAProtocolDB(Map<String, Protocol> nameToProto, Map<Integer, Protocol> numberToProto) {
+    private IANAProtocolsDB(Map<String, Protocol> nameToProto, Map<Integer, Protocol> numberToProto) {
         this.nameToProto = nameToProto;
         this.numberToProto = numberToProto;
     }
@@ -76,8 +76,8 @@ class IANAProtocolDB implements ProtocolDB {
             numberToProto.put(proto, p);
         }
         
-        public IANAProtocolDB build() {
-            return new IANAProtocolDB(nameToProto, numberToProto);
+        public IANAProtocolsDB build() {
+            return new IANAProtocolsDB(nameToProto, numberToProto);
         }
     }
 

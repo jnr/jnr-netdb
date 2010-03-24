@@ -33,7 +33,7 @@ public class FileProtocolDBTest {
     }
 
     @Test public void canLookupIpProtocolByName() {
-        ProtocolDB db = FileProtocolDB.getInstance();
+        ProtocolsDB db = FileProtocolsDB.getInstance();
         Protocol p = db.getProtocolByName("ip");
         assertNotNull("could not lookup ip protocol", p);
         assertEquals("incorrect proto number", 0, p.getProto());
@@ -41,7 +41,7 @@ public class FileProtocolDBTest {
     }
 
     @Test public void canLookupIpProtocolByNumber() {
-        ProtocolDB db = FileProtocolDB.getInstance();
+        ProtocolsDB db = FileProtocolsDB.getInstance();
         Protocol p = db.getProtocolByNumber(0);
         assertNotNull("could not lookup ip protocol", p);
         assertEquals("incorrect proto number", 0, p.getProto());

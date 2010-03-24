@@ -23,7 +23,7 @@ import java.util.Collection;
 /**
  *
  */
-interface ProtocolDB {
+interface ProtocolsDB {
     public abstract Protocol getProtocolByName(String name);
     public abstract Protocol getProtocolByNumber(Integer number);
     public abstract Collection<Protocol> getAllProtocols();
