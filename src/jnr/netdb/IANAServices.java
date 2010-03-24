@@ -92,6 +92,7 @@ final class IANAServices implements ServicesDB {
     }
 
     private static final class ServicesBuilder {
+        private static final List<String> emptyAliases = Collections.emptyList();
         final Map<String, Service> tcpNameToService = new HashMap<String, Service>();
         final Map<String, Service> udpNameToService = new HashMap<String, Service>();
         final Map<Integer, Service> tcpPortToService = new HashMap<Integer, Service>();
@@ -105,7 +106,7 @@ final class IANAServices implements ServicesDB {
 
         public final void add(String service, String proto, int port) {
 
-            Service s = new Service(service, port, proto, Collections.EMPTY_LIST);
+            Service s = new Service(service, port, proto, emptyAliases);
             
             if ("tcp".equals(proto)) {
                 tcpNameToService.put(service, s);

@@ -74,7 +74,7 @@ public final class Service {
      * @return a {@code Collection} of {@code Service} instances.
      */
     public static final Collection<Service> getAllServices() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /**
