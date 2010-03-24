@@ -4,7 +4,7 @@
   <groupId>org.jruby.extras</groupId>
   <artifactId>jnr-netdb</artifactId>
   <packaging>jar</packaging>
-  <version>0.1</version>
+  <version>0.2</version>
   <name>jnr-netdb</name>
   <description>Lookup TCP and UDP services from java</description>
   <url>http://github.com/wmeissner/jnr-netdb</url>
@@ -96,11 +96,6 @@
       </plugin>
     </plugins>
     <extensions>
-      <extension>
-        <groupId>org.jvnet.wagon-svn</groupId>
-        <artifactId>wagon-svn</artifactId>
-        <version>1.8</version>
-      </extension>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav</artifactId>
