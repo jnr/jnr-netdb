@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,9 +53,9 @@ final class FileServicesDB implements ServicesDB {
 
     static final ServicesIterator openServicesDB() {
         try {
-            return new ServicesIterator(new BufferedReader(new FileReader(new File("/etc/services"))));
+            return new ServicesIterator(new FileReader(new File("/etc/services")));
         } catch (FileNotFoundException ex) {
-            return new ServicesIterator(new BufferedReader(new StringReader("")));
+            return new ServicesIterator(new StringReader(""));
         }
     }
 
@@ -62,8 +63,8 @@ final class FileServicesDB implements ServicesDB {
         private final BufferedReader reader;
         private Service next = null;
 
-        public ServicesIterator(BufferedReader r) {
-            this.reader = r;
+        public ServicesIterator(Reader r) {
+            this.reader = new BufferedReader(r);
         }
 
         Service readNextEntry() {
