@@ -127,7 +127,7 @@ public final class Service {
             }
 
             // As a last resort, fall back to the hard coded table
-            return db != null ? db : IANAServices.getInstance();
+            return db != null ? db : IANAServicesDB.getInstance();
         }
     }
 }
