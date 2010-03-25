@@ -22,7 +22,7 @@ final class NetDBIterator implements java.util.Iterator<NetDBEntry> {
             while (true) {
                 String s = reader.readLine();
                 if (s == null) {
-                    break;
+                    throw new NoSuchElementException("No more elements");
                 }
                 String[] line = s.split("#", 2);
                 // Skip empty lines, or lines that are all comment
@@ -51,7 +51,6 @@ final class NetDBIterator implements java.util.Iterator<NetDBEntry> {
         } catch (IOException ex) {
             throw new NoSuchElementException(ex.getMessage());
         }
-        return null;
     }
 
     public boolean hasNext() {
