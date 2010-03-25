@@ -18,12 +18,16 @@
 
 package jnr.netdb;
 
+import com.kenai.jaffl.CallingConvention;
 import com.kenai.jaffl.Library;
+import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
 import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.kenai.jaffl.Platform.OS.*;
 
@@ -41,24 +45,31 @@ final class NativeServicesDB implements ServicesDB {
     static final ServicesDB load() {
         try {
             Platform.OS os = Platform.getPlatform().getOS();
-            
-            
 
-            // The ServiceEntry struct is only known to match on MacOSX, Linux, Solaris.
+            // The ServiceEntry struct is only known to match on Windows, MacOSX, Linux, Solaris.
             // We assume FreeBSD and NetBSD also match.
-            if (!(os.equals(DARWIN) || os.equals(LINUX) || os.equals(SOLARIS) || os.equals(FREEBSD) || os.equals(NETBSD))) {
+            if (!(os.equals(DARWIN) || os.equals(WINDOWS)
+                    || os.equals(LINUX) || os.equals(SOLARIS)
+                    || os.equals(FREEBSD) || os.equals(NETBSD))) {
                 return null;
             }
 
-            String[] libnames = os.equals(SOLARIS)
-                        ? new String[] { "socket", "nsl", "c" }
-                        : new String[] { "c" };
+            LibServices lib;
+            if (os.equals(WINDOWS)) {
+                Map<LibraryOption, Object> options = new HashMap<LibraryOption, Object>();
+                options.put(LibraryOption.CallingConvention, CallingConvention.STDCALL);
+                lib = Library.loadLibrary(LibServices.class, options, "Ws2_32");
+            } else {
+                String[] libnames = os.equals(SOLARIS)
+                ? new String[] { "socket", "nsl", "c" }
+                : new String[] { "c" };
+                lib = Library.loadLibrary(LibServices.class, libnames);
+            }
 
-            LibServices lib = Library.loadLibrary(LibServices.class, libnames);
             // Try to lookup a service to make sure the library loaded and found the functions
             lib.getservbyname("bootps", "udp");
             lib.getservbyport(67, "udp");
-            
+
             return new NativeServicesDB(lib);
         } catch (Throwable t) {
             return null;
@@ -66,7 +77,6 @@ final class NativeServicesDB implements ServicesDB {
     }
 
     public static class UnixServent extends com.kenai.jaffl.struct.Struct {
-
         public final String name = new UTF8StringRef();
         public final Pointer aliases = new Pointer();
         public final Signed32 port = new Signed32();
