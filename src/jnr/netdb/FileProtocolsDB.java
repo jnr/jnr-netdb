@@ -36,7 +36,7 @@ import static com.kenai.jaffl.Platform.OS.WINDOWS;
  *
  */
 class FileProtocolsDB implements ProtocolsDB {
-    private static File protocolsFile;
+    private final File protocolsFile;
 
     public static final FileProtocolsDB getInstance() {
         return SingletonHolder.INSTANCE;
@@ -46,20 +46,43 @@ class FileProtocolsDB implements ProtocolsDB {
         public static final FileProtocolsDB INSTANCE = load();
     }
 
-    FileProtocolsDB() {
+    FileProtocolsDB(File protocolsFile) {
+        this.protocolsFile = protocolsFile;
+    }
+
+    private static final File locateProtocolsFile() {
+        if (Platform.getPlatform().getOS().equals(WINDOWS)) {
+            String systemRoot;
+            try {
+                // FIXME: %SystemRoot% is typically *not* present in Java env,
+                // so we need a better way to obtain the Windows location.
+                // One possible solution: Win32API's SHGetFolderPath() with
+                // parameter CSIDL_SYSTEM or CSIDL_WINDOWS.
+                systemRoot = System.getProperty("SystemRoot", "C:\\windows");
+            } catch (SecurityException se) {
+                // whoops, try the most logical one
+                systemRoot = "C:\\windows";
+            }
+
+            return new File(systemRoot + "\\system32\\drivers\\etc\\protocol");
+
+        } else {
+            return new File("/etc/protocols");
+        }
     }
 
     private static FileProtocolsDB load() {
         try {
+            File protocolsFile = locateProtocolsFile();
             // Fail unless /etc/protocols can be read and contains at least one valid entry
-            NetDBParser parser = parseProtocolsFile();
+            NetDBParser parser = new NetDBParser(new FileReader(protocolsFile));
             try {
                 parser.iterator().next();
             } finally {
                 parser.close();
             }
 
-            return new FileProtocolsDB();
+            return new FileProtocolsDB(protocolsFile);
 
         } catch (Throwable t) {
             return null;
@@ -110,27 +133,8 @@ class FileProtocolsDB implements ProtocolsDB {
         return Collections.unmodifiableList(allProtocols);
     }
 
-    static final NetDBParser parseProtocolsFile() {
+    private final NetDBParser loadProtocolsFile() {
         try {
-            if (protocolsFile == null) {
-                boolean isWindows = Platform.getPlatform().getOS().equals(WINDOWS);
-                if (isWindows) {
-                    String systemRoot;
-                    try {
-                        // FIXME: %SystemRoot% is typically *not* present in Java env,
-                        // so we need a better way to obtain the Windows location.
-                        // One possible solution: Win32API's SHGetFolderPath() with
-                        // parameter CSIDL_SYSTEM or CSIDL_WINDOWS.
-                        systemRoot = System.getProperty("SystemRoot", "C:\\windows");
-                    } catch (SecurityException se) {
-                        // whoops, try the most logical one
-                        systemRoot = "C:\\windows";
-                    }
-                    protocolsFile = new File(systemRoot + "\\system32\\drivers\\etc\\protocol");
-                } else {
-                    protocolsFile = new File("/etc/protocols");
-                }
-            }
             return new NetDBParser(new FileReader(protocolsFile));
         } catch (FileNotFoundException ex) {
             return new NetDBParser(new StringReader(""));
@@ -142,7 +146,7 @@ class FileProtocolsDB implements ProtocolsDB {
     }
 
     private final Protocol parse(Filter filter) {
-        NetDBParser parser = parseProtocolsFile();
+        NetDBParser parser = loadProtocolsFile();
 
         try {
             for (NetDBEntry e : parser) {
