@@ -47,5 +47,4 @@ public class FileProtocolDBTest {
         assertEquals("incorrect proto number", 0, p.getProto());
         assertEquals("incorrect name", "ip", p.getName());
     }
-
 }

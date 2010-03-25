@@ -28,10 +28,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.kenai.jaffl.Platform;
+
+import static com.kenai.jaffl.Platform.OS.WINDOWS;
+
 /**
  *
  */
 class FileProtocolsDB implements ProtocolsDB {
+    private static File protocolsFile;
 
     public static final FileProtocolsDB getInstance() {
         return SingletonHolder.INSTANCE;
@@ -107,7 +112,26 @@ class FileProtocolsDB implements ProtocolsDB {
 
     static final NetDBParser parseProtocolsFile() {
         try {
-            return new NetDBParser(new FileReader(new File("/etc/protocols")));
+            if (protocolsFile == null) {
+                boolean isWindows = Platform.getPlatform().getOS().equals(WINDOWS);
+                if (isWindows) {
+                    String systemRoot;
+                    try {
+                        // FIXME: %SystemRoot% is typically *not* present in Java env,
+                        // so we need a better way to obtain the Windows location.
+                        // One possible solution: Win32API's SHGetFolderPath() with
+                        // parameter CSIDL_SYSTEM or CSIDL_WINDOWS.
+                        systemRoot = System.getProperty("SystemRoot", "C:\\windows");
+                    } catch (SecurityException se) {
+                        // whoops, try the most logical one
+                        systemRoot = "C:\\windows";
+                    }
+                    protocolsFile = new File(systemRoot + "\\system32\\drivers\\etc\\protocol");
+                } else {
+                    protocolsFile = new File("/etc/protocols");
+                }
+            }
+            return new NetDBParser(new FileReader(protocolsFile));
         } catch (FileNotFoundException ex) {
             return new NetDBParser(new StringReader(""));
         }
