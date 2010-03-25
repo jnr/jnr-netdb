@@ -89,9 +89,9 @@ final class NativeProtocolsDB implements ProtocolsDB {
         return Collections.emptyList();
     }
 
-    private final Protocol protocolFromNative(UnixProtoent s) {
+    private final Protocol protocolFromNative(UnixProtoent p) {
         List<String> aliases = Collections.emptyList();
-        return s != null ? new Protocol(s.name.get(), s.proto.get(), aliases) : null;
+        return p != null ? new Protocol(p.name.get(), p.proto.get(), aliases) : null;
     }
 
     public Protocol getProtocolByName(String name) {
