@@ -20,7 +20,6 @@ package jnr.netdb;
 
 import com.kenai.jaffl.Library;
 import com.kenai.jaffl.Platform;
-import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -91,12 +90,8 @@ final class NativeProtocolsDB implements ProtocolsDB {
     }
 
     private final Protocol protocolFromNative(UnixProtoent s) {
-        // servent#port is in network byte order - but jaffl will assume it is in host byte order
-        // so it needs to be reversed to be correct.
-        int proto = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes((short) s.proto.get()) : s.proto.get();
-
         List<String> aliases = Collections.emptyList();
-        return s != null ? new Protocol(s.name.get(), proto, aliases) : null;
+        return s != null ? new Protocol(s.name.get(), s.proto.get(), aliases) : null;
     }
 
     public Protocol getProtocolByName(String name) {
@@ -104,9 +99,7 @@ final class NativeProtocolsDB implements ProtocolsDB {
     }
 
     public Protocol getProtocolByNumber(Integer proto) {
-        int nproto = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes(proto.shortValue()) : proto.shortValue();
-        
-        return protocolFromNative(lib.getprotobynumber(nproto));
+        return protocolFromNative(lib.getprotobynumber(proto));
     }
 
     public Collection<Protocol> getAllProtocols() {
