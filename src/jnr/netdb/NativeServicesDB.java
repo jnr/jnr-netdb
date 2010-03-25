@@ -42,7 +42,15 @@ final class NativeServicesDB implements ServicesDB {
         this.lib = lib;
     }
 
-    static final ServicesDB load() {
+    public static final NativeServicesDB getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    private static final class SingletonHolder {
+        public static final NativeServicesDB INSTANCE = load();
+    }
+
+    static final NativeServicesDB load() {
         try {
             Platform.OS os = Platform.getPlatform().getOS();
 
@@ -100,6 +108,9 @@ final class NativeServicesDB implements ServicesDB {
         // servent#port is in network byte order - but jaffl will assume it is in host byte order
         // so it needs to be reversed again to be correct.
         int port = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes((short) s.port.get()) : s.port.get();
+        if (port < 0) {
+            port = (int) ((port & 0x7FFF) + 0x8000);
+        }
 
         List<String> emptyAliases = Collections.emptyList();
         return s != null ? new Service(s.name.get(), port, s.proto.get(), emptyAliases) : null;
