@@ -83,6 +83,10 @@ final class NativeServicesDB implements ServicesDB {
     }
 
     private final Service serviceFromNative(UnixServent s) {
+        if (s == null) {
+            return null;
+        }
+
         // servent#port is in network byte order - but jaffl will assume it is in host byte order
         // so it needs to be reversed again to be correct.
         int port = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes((short) s.port.get()) : s.port.get();
