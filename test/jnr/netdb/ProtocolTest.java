@@ -31,7 +31,7 @@ public class ProtocolTest {
     @After
     public void tearDown() {
     }
-   
+
     @Test public void canLookupIpProtocolByName() {
         Protocol p = Protocol.getProtocolByName("ip");
         assertNotNull("could not lookup ip protocol", p);
@@ -39,10 +39,20 @@ public class ProtocolTest {
         assertEquals("incorrect name", "ip", p.getName());
     }
 
+    @Test public void returnsNullOnUnknownProtocol() {
+        Protocol p = Protocol.getProtocolByName("foo-bar-baz");
+        assertNull("could not handle unknown protocol", p);
+    }
+
     @Test public void canLookupIpProtocolByNumber() {
         Protocol p = Protocol.getProtocolByNumber(0);
         assertNotNull("could not lookup ip protocol", p);
         assertEquals("incorrect proto number", 0, p.getProto());
         assertEquals("incorrect name", "ip", p.getName());
+    }
+
+    @Test public void returnsNullOnInvalidNumber() {
+        Protocol p = Protocol.getProtocolByNumber(-1);
+        assertNull("could not handle invalid number ", p);
     }
 }
