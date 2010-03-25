@@ -130,4 +130,10 @@ public final class Service {
             return db != null ? db : IANAServicesDB.getInstance();
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("<Service: Name: %s, Port: %d, Proto: %s, Aliases: %s>",
+                serviceName, port, proto, aliases);
+    };
 }

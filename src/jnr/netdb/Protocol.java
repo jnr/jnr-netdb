@@ -115,4 +115,10 @@ public final class Protocol {
             return db != null ? db : IANAProtocolsDB.getInstance();
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("<Protocol: Name: %s, Proto: %d, Aliases: %s>",
+                protocolName, proto, aliases);
+    };
 }
