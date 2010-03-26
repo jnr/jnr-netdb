@@ -109,6 +109,9 @@ final class NativeServicesDB implements ServicesDB {
         // so it needs to be reversed again to be correct.
         int port = ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN) ? Short.reverseBytes((short) s.port.get()) : s.port.get();
         if (port < 0) {
+            // The s_port field is really an unsigned 16 bit quantity, but the
+            // byte flipping above will return numbers >= 32768 as a negative value,
+            // so they need to be converted back to a unsigned 16 bit value.
             port = (int) ((port & 0x7FFF) + 0x8000);
         }
 
