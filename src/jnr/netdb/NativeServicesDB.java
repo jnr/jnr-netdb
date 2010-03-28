@@ -24,6 +24,7 @@ import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
 import com.kenai.jaffl.Pointer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -95,10 +96,23 @@ final class NativeServicesDB implements ServicesDB {
     public static interface LibServices {
         UnixServent getservbyname(String name, String proto);
         UnixServent getservbyport(Integer port, String proto);
+        UnixServent getservent();
+        void endservent();
     }
     
     public Collection<Service> getAllServices() {
-        return Collections.emptyList();
+        UnixServent s;
+        List<Service> allServices = new ArrayList<Service>();
+
+        try {
+            while ((s = lib.getservent()) != null) {
+                allServices.add(serviceFromNative(s));
+            }
+        } finally {
+            lib.endservent();
+        }
+
+        return allServices;
     }
 
     private final Service serviceFromNative(UnixServent s) {

@@ -71,4 +71,20 @@ public class NativeServicesDBTest {
         assertTrue(s.getAliases().contains("biff") || s.getAliases().contains("comsat"));
     }
 
+    @Test public void getAllServicesReturnsNonEmptyList() {
+        ServicesDB db = NativeServicesDB.load();
+        assertFalse(db.getAllServices().isEmpty());
+    }
+
+    @Test public void getAllServicesContainsFtp() {
+        ServicesDB db = NativeServicesDB.load();
+        boolean ftpFound = false;
+        for (Service s : db.getAllServices()) {
+            if (s.getName().equals("ftp") || s.getAliases().contains("ftp")) {
+                ftpFound = true;
+                break;
+            }
+        }
+        assertTrue(ftpFound);
+    }
 }
