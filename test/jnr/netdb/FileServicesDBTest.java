@@ -48,4 +48,22 @@ public class FileServicesDBTest {
         assertEquals("incorrect name", "bootps", s.getName());
     }
 
+    @Test public void canLookupServiceWithAliasByName() {
+        ServicesDB db = new FileServicesDB();
+        Service s = db.getServiceByName("comsat", "udp");
+        assertNotNull("could not lookup comsat/biff service", s);
+        assertEquals("incorrect port", 512, s.getPort());
+        assertTrue(s.getName().equals("biff") || s.getName().equals("comsat"));
+        assertTrue(s.getAliases().contains("biff") || s.getAliases().contains("comsat"));
+    }
+
+    @Test public void canLookupServiceWithAliasByPort() {
+        ServicesDB db = new FileServicesDB();
+        Service s = db.getServiceByPort(512, "udp");
+        assertNotNull("could not lookup comsat/biff service", s);
+        assertEquals("incorrect port", 512, s.getPort());
+        assertTrue(s.getName().equals("biff") || s.getName().equals("comsat"));
+        assertTrue(s.getAliases().contains("biff") || s.getAliases().contains("comsat"));
+    }
+
 }

@@ -22,6 +22,7 @@ import com.kenai.jaffl.CallingConvention;
 import com.kenai.jaffl.Library;
 import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
+import com.kenai.jaffl.Pointer;
 import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.Collections;
@@ -116,7 +117,11 @@ final class NativeServicesDB implements ServicesDB {
         }
 
         List<String> emptyAliases = Collections.emptyList();
-        return s != null ? new Service(s.name.get(), port, s.proto.get(), emptyAliases) : null;
+        Pointer ptr;
+        final Collection<String> aliases = ((ptr = s.aliases.get()) != null)
+                ? StringUtil.getNullTerminatedStringArray(ptr) : emptyAliases;
+
+        return s != null ? new Service(s.name.get(), port, s.proto.get(), aliases) : null;
     }
 
     public Service getServiceByName(String name, String proto) {

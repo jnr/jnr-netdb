@@ -22,6 +22,7 @@ import com.kenai.jaffl.CallingConvention;
 import com.kenai.jaffl.Library;
 import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
+import com.kenai.jaffl.Pointer;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -100,8 +101,17 @@ final class NativeProtocolsDB implements ProtocolsDB {
     }
 
     private final Protocol protocolFromNative(UnixProtoent p) {
-        List<String> aliases = Collections.emptyList();
-        return p != null ? new Protocol(p.name.get(), (short) p.proto.get(), aliases) : null;
+        if (p == null) {
+            return null;
+        }
+
+        List<String> emptyAliases = Collections.emptyList();
+
+        Pointer ptr;
+        final Collection<String> aliases = ((ptr = p.aliases.get()) != null)
+                ? StringUtil.getNullTerminatedStringArray(ptr) : emptyAliases;
+
+        return new Protocol(p.name.get(), (short) p.proto.get(), aliases);
     }
 
     public Protocol getProtocolByName(String name) {
