@@ -4,7 +4,7 @@
   <groupId>org.jruby.extras</groupId>
   <artifactId>jnr-netdb</artifactId>
   <packaging>jar</packaging>
-  <version>0.3</version>
+  <version>0.4</version>
   <name>jnr-netdb</name>
   <description>Lookup TCP and UDP services from java</description>
   <url>http://github.com/wmeissner/jnr-netdb</url>
