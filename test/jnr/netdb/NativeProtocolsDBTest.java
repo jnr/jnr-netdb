@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package jnr.netdb;
 
@@ -14,7 +10,6 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author wayne
  */
 public class NativeProtocolsDBTest {
 
@@ -69,4 +64,20 @@ public class NativeProtocolsDBTest {
         assertEquals("incorrect name", "tcp", p.getName());
     }
 
+     @Test public void getAllProtocolsReturnsNonEmptyList() {
+        ProtocolsDB db = NativeProtocolsDB.getInstance();
+        assertFalse(db.getAllProtocols().isEmpty());
+    }
+
+    @Test public void getAllProtocolsContainsTcp() {
+        ProtocolsDB db = NativeProtocolsDB.getInstance();
+        boolean tcpFound = false;
+        for (Protocol p : db.getAllProtocols()) {
+            if (p.getName().equals("tcp") || p.getAliases().contains("TCP")) {
+                tcpFound = true;
+                break;
+            }
+        }
+        assertTrue(tcpFound);
+    }
 }

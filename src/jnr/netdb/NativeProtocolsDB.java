@@ -23,6 +23,7 @@ import com.kenai.jaffl.Library;
 import com.kenai.jaffl.LibraryOption;
 import com.kenai.jaffl.Platform;
 import com.kenai.jaffl.Pointer;
+import java.util.ArrayList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -94,12 +95,10 @@ final class NativeProtocolsDB implements ProtocolsDB {
     public static interface LibProto {
         UnixProtoent getprotobyname(String name);
         UnixProtoent getprotobynumber(int proto);
+        UnixProtoent getprotoent();
+        void endprotoent();
     }
     
-    public Collection<Service> getAllServices() {
-        return Collections.emptyList();
-    }
-
     private final Protocol protocolFromNative(UnixProtoent p) {
         if (p == null) {
             return null;
@@ -123,7 +122,17 @@ final class NativeProtocolsDB implements ProtocolsDB {
     }
 
     public Collection<Protocol> getAllProtocols() {
-        return Collections.emptyList();
-    }
+        UnixProtoent p;
+        List<Protocol> allProtocols = new ArrayList<Protocol>();
 
+        try {
+            while ((p = lib.getprotoent()) != null) {
+                allProtocols.add(protocolFromNative(p));
+            }
+        } finally {
+            lib.endprotoent();
+        }
+
+        return allProtocols;
+    }
 }
