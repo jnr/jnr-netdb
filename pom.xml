@@ -4,7 +4,7 @@
   <groupId>org.jruby.extras</groupId>
   <artifactId>jnr-netdb</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <name>jnr-netdb</name>
   <description>Lookup TCP and UDP services from java</description>
   <url>http://github.com/wmeissner/jnr-netdb</url>
@@ -65,7 +65,7 @@
     <dependency>
       <groupId>org.jruby.extras</groupId>
       <artifactId>jaffl</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.4</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
