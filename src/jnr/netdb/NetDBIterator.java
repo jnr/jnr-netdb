@@ -24,7 +24,7 @@ final class NetDBIterator implements java.util.Iterator<NetDBEntry> {
 
             String[] line = s.split("#", 2);
             // Skip empty lines, or lines that are all comment
-            if (line.length < 0 || line[0].isEmpty()) {
+            if (line.length < 1 || line[0].length() == 0) {
                 continue;
             }
 
