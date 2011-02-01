@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.kenai.jaffl.Platform.OS.*;
 
@@ -82,6 +84,7 @@ final class NativeProtocolsDB implements ProtocolsDB {
             
             return new NativeProtocolsDB(lib);
         } catch (Throwable t) {
+            Logger.getLogger(NativeProtocolsDB.class.getName()).log(Level.WARNING, "Failed to load native protocols db", t);
             return null;
         }
     }
