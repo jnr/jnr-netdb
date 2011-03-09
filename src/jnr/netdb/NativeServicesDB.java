@@ -18,11 +18,11 @@
 
 package jnr.netdb;
 
-import com.kenai.jaffl.CallingConvention;
-import com.kenai.jaffl.Library;
-import com.kenai.jaffl.LibraryOption;
-import com.kenai.jaffl.Platform;
-import com.kenai.jaffl.Pointer;
+import jnr.ffi.CallingConvention;
+import jnr.ffi.Library;
+import jnr.ffi.LibraryOption;
+import jnr.ffi.Platform;
+import jnr.ffi.Pointer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.kenai.jaffl.Platform.OS.*;
+import static jnr.ffi.Platform.OS.*;
 
 /**
  *
@@ -89,7 +89,7 @@ final class NativeServicesDB implements ServicesDB {
         }
     }
 
-    public static class UnixServent extends com.kenai.jaffl.struct.Struct {
+    public static class UnixServent extends jnr.ffi.struct.Struct {
         public final String name = new UTF8StringRef();
         public final Pointer aliases = new Pointer();
         public final Signed32 port = new Signed32();

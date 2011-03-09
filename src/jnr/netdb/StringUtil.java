@@ -18,8 +18,8 @@
 
 package jnr.netdb;
 
-import com.kenai.jaffl.Platform;
-import com.kenai.jaffl.Pointer;
+import jnr.ffi.Platform;
+import jnr.ffi.Pointer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -1,7 +1,7 @@
 
 package jnr.netdb;
 
-import com.kenai.jaffl.Platform;
+import jnr.ffi.Platform;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

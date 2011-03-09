@@ -9,3 +9,5 @@ build
 dist
 target
 lib/nblibraries-private.properties
+/.settings/
+

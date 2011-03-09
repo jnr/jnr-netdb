@@ -28,9 +28,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.kenai.jaffl.Platform;
+import jnr.ffi.Platform;
 
-import static com.kenai.jaffl.Platform.OS.WINDOWS;
+import static jnr.ffi.Platform.OS.WINDOWS;
 
 /**
  *
