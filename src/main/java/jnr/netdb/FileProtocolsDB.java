@@ -51,7 +51,7 @@ class FileProtocolsDB implements ProtocolsDB {
     }
 
     private static final File locateProtocolsFile() {
-        if (Platform.getPlatform().getOS().equals(WINDOWS)) {
+        if (Platform.getNativePlatform().getOS().equals(WINDOWS)) {
             String systemRoot;
             try {
                 // FIXME: %SystemRoot% is typically *not* present in Java env,

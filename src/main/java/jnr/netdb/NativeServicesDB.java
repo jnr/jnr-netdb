@@ -18,11 +18,8 @@
 
 package jnr.netdb;
 
-import jnr.ffi.CallingConvention;
-import jnr.ffi.Library;
-import jnr.ffi.LibraryOption;
-import jnr.ffi.Platform;
-import jnr.ffi.Pointer;
+import jnr.ffi.*;
+
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,11 +53,11 @@ final class NativeServicesDB implements ServicesDB {
 
     static final NativeServicesDB load() {
         try {
-            Platform.OS os = Platform.getPlatform().getOS();
+            Platform.OS os = Platform.getNativePlatform().getOS();
 
             // The ServiceEntry struct is only known to match on Windows, MacOSX, Linux, Solaris.
             // We assume FreeBSD and NetBSD also match.
-            if (!(os.equals(DARWIN) || (os.equals(WINDOWS) && Platform.getPlatform().getCPU() == Platform.CPU.I386)
+            if (!(os.equals(DARWIN) || (os.equals(WINDOWS) && Platform.getNativePlatform().getCPU() == Platform.CPU.I386)
                     || os.equals(LINUX) || os.equals(SOLARIS)
                     || os.equals(FREEBSD) || os.equals(NETBSD))) {
                 return null;
@@ -89,11 +86,15 @@ final class NativeServicesDB implements ServicesDB {
         }
     }
 
-    public static class UnixServent extends jnr.ffi.struct.Struct {
+    public static class UnixServent extends jnr.ffi.Struct {
         public final String name = new UTF8StringRef();
         public final Pointer aliases = new Pointer();
         public final Signed32 port = new Signed32();
         public final String proto = new UTF8StringRef();
+
+        public UnixServent(jnr.ffi.Runtime runtime) {
+            super(runtime);
+        }
     }
 
     public static interface LibServices {

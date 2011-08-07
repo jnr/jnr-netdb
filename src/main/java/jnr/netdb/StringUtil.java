@@ -28,20 +28,19 @@ import java.util.List;
  * Utility class for native strings
  */
 class StringUtil {
-    public static final int POINTER_SIZE = Platform.getPlatform().addressSize() / 8;
 
     public static final List<String> getNullTerminatedStringArray(Pointer ptr) {
-        Pointer p;
-        
         // If it is an empty list, do not allocate an empty ArrayList for it
-        if ((p = ptr.getPointer(0)) == null) {
+        if (ptr == null || ptr.getPointer(0) == null) {
             return Collections.emptyList();
         }
 
+        final int pointerSize = ptr.getRuntime().addressSize();
+
         List<String> array = new ArrayList<String>();
-        array.add(p.getString(0));
-        
-        for (int off = POINTER_SIZE; (p = ptr.getPointer(off)) != null; off += POINTER_SIZE) {
+
+        Pointer p;
+        for (int off = 0; (p = ptr.getPointer(off)) != null; off += pointerSize) {
             array.add(p.getString(0));
         }
 

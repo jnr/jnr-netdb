@@ -18,11 +18,8 @@
 
 package jnr.netdb;
 
-import jnr.ffi.CallingConvention;
-import jnr.ffi.Library;
-import jnr.ffi.LibraryOption;
-import jnr.ffi.Platform;
-import jnr.ffi.Pointer;
+import jnr.ffi.*;
+
 import java.util.ArrayList;
 
 import java.util.Collection;
@@ -56,11 +53,11 @@ final class NativeProtocolsDB implements ProtocolsDB {
 
     private static final NativeProtocolsDB load() {
         try {
-            Platform.OS os = Platform.getPlatform().getOS();
+            Platform.OS os = Platform.getNativePlatform().getOS();
 
             // The protoent struct is only known to match on Windows, MacOSX, Linux, Solaris.
             // We assume FreeBSD and NetBSD also match.
-            if (!(os.equals(DARWIN) || (os.equals(WINDOWS) && Platform.getPlatform().getCPU() == Platform.CPU.I386)
+            if (!(os.equals(DARWIN) || (os.equals(WINDOWS) && Platform.getNativePlatform().getCPU() == Platform.CPU.I386)
                     || os.equals(LINUX) || os.equals(SOLARIS)
                     || os.equals(FREEBSD) || os.equals(NETBSD))) {
                 return null;
@@ -73,8 +70,8 @@ final class NativeProtocolsDB implements ProtocolsDB {
                 lib = Library.loadLibrary(LibProto.class, options, "Ws2_32");
             } else {
                 String[] libnames = os.equals(SOLARIS)
-                ? new String[] { "socket", "nsl", "c" }
-                : new String[] { "c" };
+                        ? new String[]{"socket", "nsl", "c"}
+                        : new String[]{"c"};
                 lib = Library.loadLibrary(LibProto.class, libnames);
             }
                         
@@ -89,10 +86,14 @@ final class NativeProtocolsDB implements ProtocolsDB {
         }
     }
 
-    public static class UnixProtoent extends jnr.ffi.struct.Struct {
+    public static class UnixProtoent extends jnr.ffi.Struct {
         public final String name = new UTF8StringRef();
         public final Pointer aliases = new Pointer();
         public final Signed32 proto = new Signed32();
+
+        public UnixProtoent(jnr.ffi.Runtime runtime) {
+            super(runtime);
+        }
     }
 
     public static interface LibProto {

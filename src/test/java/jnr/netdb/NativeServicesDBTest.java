@@ -34,7 +34,7 @@ public class NativeServicesDBTest {
     }
 
     @Test public void canLookupServiceThan32768ByName() {
-        if (Platform.getPlatform().getOS().equals(Platform.OS.DARWIN)) {
+        if (Platform.getNativePlatform().getOS().equals(Platform.OS.DARWIN)) {
             ServicesDB db = NativeServicesDB.load();
             Service s = db.getServiceByName("blp5", "udp");
             assertNotNull("could not lookup blp5 service", s);
@@ -44,7 +44,7 @@ public class NativeServicesDBTest {
     }
 
     @Test public void canLookupServiceLargerThan32768ByPort() {
-        if (Platform.getPlatform().getOS().equals(Platform.OS.DARWIN)) {
+        if (Platform.getNativePlatform().getOS().equals(Platform.OS.DARWIN)) {
             ServicesDB db = NativeServicesDB.load();
             Service s = db.getServiceByPort(48129, "udp");
             assertNotNull("could not lookup blp5 service", s);

@@ -1,13 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jruby.extras</groupId>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>com.github.jnr</groupId>
   <artifactId>jnr-netdb</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.3</version>
+  <version>1.0.4-SNAPSHOT</version>
   <name>jnr-netdb</name>
   <description>Lookup TCP and UDP services from java</description>
   <url>http://github.com/wmeissner/jnr-netdb</url>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -15,35 +22,13 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
   <scm>
-    <connection>scm:git:http://github.com/wmeissner/jnr-netdb.git</connection>
-    <url>http://github.com/wmeissner/jnr-netdb</url>
+    <connection>scm:git:git@github.com:jnr/jnr-netdb.git</connection>
+    <developerConnection>scm:git:git@github.com:jnr/jnr-netdb.git</developerConnection>
+    <url>git@github.com:jnr/jnr-netdb.git</url>
   </scm>
-  <distributionManagement>
-     <repository>
-      <id>codehaus-jruby-repository</id>
-      <name>JRuby Central Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/jruby</url>
-    </repository>
-    <snapshotRepository>
-      <id>codehaus-jruby-snapshot-repository</id>
-      <name>JRuby Central Development Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/jruby</url>
-    </snapshotRepository>
-  </distributionManagement>
-  <repositories>
-    <repository>
-      <id>codehaus</id>
-      <name>Codehaus Repository</name>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <url>http://repository.codehaus.org</url>
-    </repository>
-  </repositories>
+
   <developers>
     <developer>
       <id>wmeissner</id>
@@ -53,65 +38,21 @@
   </developers>
 
   <dependencies>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
+      <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.jruby.extras</groupId>
+      <groupId>com.github.jnr</groupId>
       <artifactId>jnr-ffi</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
       <scope>compile</scope>
     </dependency>
+
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.7</version>
-        <executions>
-          <execution>
-            <id>attach-javadoc</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav</artifactId>
-      </extension>
-    </extensions>
-  </build>
-  <reporting>
-    <outputDirectory>build/report</outputDirectory>
-  </reporting>
+
 </project>
