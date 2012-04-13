@@ -12,7 +12,7 @@
   <version>1.0.5-SNAPSHOT</version>
   <name>jnr-netdb</name>
   <description>Lookup TCP and UDP services from java</description>
-  <url>http://github.com/wmeissner/jnr-netdb</url>
+  <url>http://github.com/jnr/jnr-netdb</url>
 
   <licenses>
     <license>
