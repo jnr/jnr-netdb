@@ -19,6 +19,8 @@
 package jnr.netdb;
 
 import jnr.ffi.*;
+import jnr.ffi.Runtime;
+import jnr.ffi.annotations.Direct;
 
 import java.util.ArrayList;
 
@@ -35,9 +37,7 @@ import static jnr.ffi.Platform.OS.*;
 /**
  *
  */
-final class NativeProtocolsDB implements ProtocolsDB {
-
-    private final LibProto lib;
+abstract class NativeProtocolsDB implements ProtocolsDB {
 
     public static final NativeProtocolsDB getInstance() {
         return SingletonHolder.INSTANCE;
@@ -45,10 +45,6 @@ final class NativeProtocolsDB implements ProtocolsDB {
 
     private static final class SingletonHolder {
         public static final NativeProtocolsDB INSTANCE = load();
-    }
-
-    NativeProtocolsDB(LibProto lib) {
-        this.lib = lib;
     }
 
     private static final NativeProtocolsDB load() {
@@ -72,14 +68,19 @@ final class NativeProtocolsDB implements ProtocolsDB {
                 String[] libnames = os.equals(SOLARIS)
                         ? new String[]{"socket", "nsl", "c"}
                         : new String[]{"c"};
-                lib = Library.loadLibrary(LibProto.class, libnames);
+                lib = os.equals(LINUX)
+                    ? Library.loadLibrary(LinuxLibProto.class, libnames)
+                    : Library.loadLibrary(LibProto.class, libnames);
             }
-                        
+
+            NativeProtocolsDB protocolsDB = os.equals(LINUX)
+                    ? new LinuxNativeProtocolsDB((LinuxLibProto) lib)
+                    : new DefaultNativeProtocolsDB(lib);
             // Try to lookup a protocol to make sure the library loaded and found the functions
-            lib.getprotobyname("ip");
-            lib.getprotobynumber(0);
+            protocolsDB.getProtocolByName("ip");
+            protocolsDB.getProtocolByNumber(0);
             
-            return new NativeProtocolsDB(lib);
+            return protocolsDB;
         } catch (Throwable t) {
             Logger.getLogger(NativeProtocolsDB.class.getName()).log(Level.WARNING, "Failed to load native protocols db", t);
             return null;
@@ -100,10 +101,17 @@ final class NativeProtocolsDB implements ProtocolsDB {
         UnixProtoent getprotobyname(String name);
         UnixProtoent getprotobynumber(int proto);
         UnixProtoent getprotoent();
+        void setprotoent(int stayopen);
         void endprotoent();
     }
-    
-    private final Protocol protocolFromNative(UnixProtoent p) {
+
+    public static interface LinuxLibProto extends LibProto{
+        int getprotobyname_r(String proto, @Direct UnixProtoent protoent, Pointer buf, NativeLong buflen, Pointer result);
+        int getprotobynumber_r(int proto, @Direct UnixProtoent protoent, Pointer buf, NativeLong buflen, Pointer result);
+        int getprotoent_r(@Direct UnixProtoent protoent, Pointer buf, NativeLong buflen, Pointer result);
+    }
+
+    static Protocol protocolFromNative(UnixProtoent p) {
         if (p == null) {
             return null;
         }
@@ -117,26 +125,87 @@ final class NativeProtocolsDB implements ProtocolsDB {
         return new Protocol(p.name.get(), (short) p.proto.get(), aliases);
     }
 
-    public Protocol getProtocolByName(String name) {
-        return protocolFromNative(lib.getprotobyname(name));
-    }
+    static final class DefaultNativeProtocolsDB extends NativeProtocolsDB {
+        private final LibProto lib;
 
-    public Protocol getProtocolByNumber(Integer proto) {
-        return protocolFromNative(lib.getprotobynumber(proto));
-    }
-
-    public Collection<Protocol> getAllProtocols() {
-        UnixProtoent p;
-        List<Protocol> allProtocols = new ArrayList<Protocol>();
-
-        try {
-            while ((p = lib.getprotoent()) != null) {
-                allProtocols.add(protocolFromNative(p));
-            }
-        } finally {
-            lib.endprotoent();
+        DefaultNativeProtocolsDB(LibProto lib) {
+            this.lib = lib;
         }
 
-        return allProtocols;
+        public synchronized Protocol getProtocolByName(String name) {
+            return protocolFromNative(lib.getprotobyname(name));
+        }
+
+        public synchronized Protocol getProtocolByNumber(Integer proto) {
+            return protocolFromNative(lib.getprotobynumber(proto));
+        }
+
+        public synchronized Collection<Protocol> getAllProtocols() {
+            UnixProtoent p;
+            List<Protocol> allProtocols = new ArrayList<Protocol>();
+
+            lib.setprotoent(0);
+            try {
+                while ((p = lib.getprotoent()) != null) {
+                    allProtocols.add(protocolFromNative(p));
+                }
+            } finally {
+                lib.endprotoent();
+            }
+
+            return allProtocols;
+        }
+    }
+
+    static final class LinuxNativeProtocolsDB extends NativeProtocolsDB {
+        private static final int BUFLEN = 4096;
+        private final Runtime runtime;
+        private final Pointer buf;
+        private final LinuxLibProto lib;
+
+
+        LinuxNativeProtocolsDB(LinuxLibProto lib) {
+            this.lib = lib;
+            this.runtime = Library.getRuntime(lib);
+            this.buf = Memory.allocateDirect(runtime, BUFLEN);
+        }
+
+        public synchronized Protocol getProtocolByName(String name) {
+            UnixProtoent protoent = new UnixProtoent(runtime);
+            Pointer result = Memory.allocateDirect(runtime, runtime.addressSize());
+            if (lib.getprotobyname_r(name, protoent, buf, new NativeLong(BUFLEN), result) == 0) {
+                return result.getPointer(0) != null ? protocolFromNative(protoent) : null;
+            }
+
+            throw new RuntimeException("getprotobyname_r failed");
+        }
+
+        public synchronized Protocol getProtocolByNumber(Integer number) {
+            UnixProtoent protoent = new UnixProtoent(runtime);
+            Pointer result = Memory.allocateDirect(runtime, runtime.addressSize());
+            if (lib.getprotobynumber_r(number, protoent, buf, new NativeLong(BUFLEN), result) == 0) {
+                return result.getPointer(0) != null ? protocolFromNative(protoent) : null;
+            }
+
+            throw new RuntimeException("getprotobynumber_r failed");
+        }
+
+        public synchronized Collection<Protocol> getAllProtocols() {
+            UnixProtoent p = new UnixProtoent(runtime);
+            List<Protocol> allProtocols = new ArrayList<Protocol>();
+            Pointer result = Memory.allocateDirect(runtime, runtime.addressSize());
+            NativeLong buflen = new NativeLong(BUFLEN);
+
+            lib.setprotoent(0);
+            try {
+                while (lib.getprotoent_r(p, buf, buflen, result) == 0 && result.getPointer(0) != null) {
+                    allProtocols.add(protocolFromNative(p));
+                }
+            } finally {
+                lib.endprotoent();
+            }
+
+            return allProtocols;
+        }
     }
 }
