@@ -34,18 +34,18 @@ public class NativeProtocolsDBTest {
 
     @Test public void canLookupIpProtocolByName() {
         ProtocolsDB db = NativeProtocolsDB.getInstance();
-        Protocol p = db.getProtocolByName("ip");
-        assertNotNull("could not lookup ip protocol", p);
-        assertEquals("incorrect proto number", 0, p.getProto());
-        assertEquals("incorrect name", "ip", p.getName());
+        Protocol p = db.getProtocolByName("ipv4");
+        assertNotNull("could not lookup ipv4 protocol", p);
+        assertEquals("incorrect proto number", 4, p.getProto());
+        assertEquals("incorrect name", "ipv4", p.getName());
     }
 
     @Test public void canLookupIpProtocolByNumber() {
         ProtocolsDB db = NativeProtocolsDB.getInstance();
-        Protocol p = db.getProtocolByNumber(0);
-        assertNotNull("could not lookup ip protocol", p);
-        assertEquals("incorrect proto number", 0, p.getProto());
-        assertEquals("incorrect name", "ip", p.getName());
+        Protocol p = db.getProtocolByNumber(4);
+        assertNotNull("could not lookup ipv4 protocol", p);
+        assertEquals("incorrect proto number", 4, p.getProto());
+        assertEquals("incorrect name", "ipv4", p.getName());
     }
 
     @Test public void canLookupTcpProtocolByName() {
