@@ -34,18 +34,33 @@ public class NativeProtocolsDBTest {
 
     @Test public void canLookupIpProtocolByName() {
         ProtocolsDB db = NativeProtocolsDB.getInstance();
-        Protocol p = db.getProtocolByName("ipv4");
-        assertNotNull("could not lookup ipv4 protocol", p);
-        assertEquals("incorrect proto number", 4, p.getProto());
-        assertEquals("incorrect name", "ipv4", p.getName());
+        // we try ip first and then ipv4 due to jnr/jnr-netdb#4
+        Protocol p = Protocol.getProtocolByName("ip");
+        if (p != null) {
+            assertEquals("incorrect proto number", 0, p.getProto());
+            assertEquals("incorrect name", "ip", p.getName());
+        } else {
+            p = Protocol.getProtocolByName("ipv4");
+            assertNotNull("could not lookup ipv4 protocol", p);
+            assertEquals("incorrect proto number", 4, p.getProto());
+            assertEquals("incorrect name", "ipv4", p.getName());
+        }
     }
 
     @Test public void canLookupIpProtocolByNumber() {
         ProtocolsDB db = NativeProtocolsDB.getInstance();
-        Protocol p = db.getProtocolByNumber(4);
-        assertNotNull("could not lookup ipv4 protocol", p);
-        assertEquals("incorrect proto number", 4, p.getProto());
-        assertEquals("incorrect name", "ipv4", p.getName());
+        // we try ip first and then ipv4 due to jnr/jnr-netdb#4
+        Protocol p = Protocol.getProtocolByName("ip");
+        if (p != null) {
+            p = Protocol.getProtocolByNumber(0);
+            assertEquals("incorrect proto number", 0, p.getProto());
+            assertEquals("incorrect name", "ip", p.getName());
+        } else {
+            p = Protocol.getProtocolByNumber(4);
+            assertNotNull("could not lookup ip protocol", p);
+            assertEquals("incorrect proto number", 4, p.getProto());
+            assertEquals("incorrect name", "ipv4", p.getName());
+        }
     }
 
     @Test public void canLookupTcpProtocolByName() {
